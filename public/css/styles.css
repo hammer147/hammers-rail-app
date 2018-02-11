@@ -1,0 +1,14 @@
+body {background-color: grey}
+
+div {background-color: beige;
+  border: 1px solid bisque;
+}
+
+.blauwetekst {color: blue}
+
+.titeltekst {text-align: center;
+  font-size: 150%;}
+
+.update {font-style: italic;
+  font-size: 75%;
+color: blueviolet}
