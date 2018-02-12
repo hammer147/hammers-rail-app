@@ -19,25 +19,25 @@
 			<div class="col-12">{{message}}<span class="update">(laatste update: {{latestUpdate}})</span></div>
 		</div>
 		<div class="row">
-			<div class="col-1">RealTime</div>
-			<div class="col-1">Binnen</div>
-			<div class="col-1">Spoor</div>
-			<div class="col-1">Reistijd</div>
+			<div class="col-2">Verwacht</div>
+			<div class="col-1">In</div>
+			<div class="col-1">Sp.</div>
+			<div class="col-1">Duur</div>
 			<div class="col-3">Richting</div>
-			<div class="col-1">Vertrek</div>
-			<div class="col-1">Vertraging</div>
-			<div class="col-3">Opmerking</div>
+			<div class="col-2">Voorzien</div>
+			<div class="col-1">Vertr.</div>
+			<div class="col-1">Opm.</div>
 		</div>
 		{{#each connections}}
 		<div class="row blauwetekst">
-			<div class="col-1">{{this.realTime}}</div>
+			<div class="col-2">{{this.realTime}}</div>
 			<div class="col-1">{{this.minLeft}}</div>
 			<div class="col-1">{{this.platform}}</div>
 			<div class="col-1">{{this.durationMin}}</div>
 			<div class="col-3">{{this.direction}}</div>
-			<div class="col-1">{{this.time}}</div>
+			<div class="col-2">{{this.time}}</div>
 			<div class="col-1">{{this.delayMin}}</div>
-			<div class="col-3"></div>
+			<div class="col-1"></div>
 		</div>
 		{{/each}}
 	</div>
