@@ -22,10 +22,12 @@ app.set('view engine', 'hbs');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.enable('trust proxy');
+
 app.use((req, res, next) => {
   where.is(req.ip, (err, result) => {
     req.geoip = result;
-    console.log(result);
+    console.log(req.ip);
     next();
   });
 });
