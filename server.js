@@ -8,8 +8,8 @@ const geolib = require('geolib');
 
 const port = process.env.PORT || 3000;
 
-const leuvenLocation = { latitude: 50.8814, longitude: 4.7157};
-const brusselsNorthLocation = { latitude: 50.86, longitude: 4.361667};
+const leuvenLocation = { latitude: 50.8814, longitude: 4.7157 };
+const brusselsNorthLocation = { latitude: 50.86, longitude: 4.361667 };
 const leuvenCode = '008833001';
 const brusselsNorthCode = '008812005';
 
@@ -27,27 +27,37 @@ app.enable('trust proxy');
 app.use((req, res, next) => {
   where.is(req.ip, (err, result) => {
     req.geoip = result;
-    console.log(req.ip);
+    console.log(typeof req.ip); // ...
     next();
   });
 });
 
 app.get('/', (req, res) => {
-
   const ipLocation = { latitude: req.geoip.get('lat'), longitude: req.geoip.get('lng') };
   const distanceToLeuven = geolib.getDistance(ipLocation, leuvenLocation);
   const distanceToBrusselsNorth = geolib.getDistance(ipLocation, brusselsNorthLocation);
 
-  // console.log('leuven:', distanceToLeuven, 'brussels:', distanceToBrusselsNorth);
-  // console.log(ipLocation);
+  let fromCode;
+  let toCode;
+  let from;
+  let to;
 
-  const from = '008833001'; // Leuven
-  const to = '008812005'; // Brussel-Noord
+  if (distanceToLeuven < distanceToBrusselsNorth) {
+    fromCode = leuvenCode;
+    toCode = brusselsNorthCode;
+    from = 'Leuven';
+    to = 'Brussel Noord';
+  } else {
+    fromCode = brusselsNorthCode;
+    toCode = leuvenCode;
+    from = 'Brussel Noord';
+    to = 'Leuven';
+  }
 
-  axios.get(`https://api.irail.be/connections/?from=${from}&to=${to}&format=json`)
+  axios.get(`https://api.irail.be/connections/?from=${fromCode}&to=${toCode}&format=json`)
     .then((response) => {
-      const pageTitle = 'Leuven - Brussel';
-      const message = 'Leuven \u2192 Brussel-Noord    ';
+      const pageTitle = `${from} - ${to}`;
+      const message = `${from} \u2192 ${to}  `;
       const latestUpdate = moment.unix(response.data.timestamp).format('HH:mm:ss');
 
       const connections = response.data.connection.map((connection) => {
@@ -60,12 +70,16 @@ app.get('/', (req, res) => {
         const { platform } = connection.departure;
         const direction = connection.departure.direction.name;
         const durationMin = connection.duration / 60;
-        return { time, delayMin, realTime, minLeft, platform, direction, durationMin };
+        return {
+          time, delayMin, realTime, minLeft, platform, direction, durationMin,
+        };
       });
 
       connections.sort((a, b) => a.unixRealTime - b.unixRealTime);
 
-      res.render('index', { pageTitle, message, latestUpdate, connections, distanceToLeuven, distanceToBrusselsNorth });
+      res.render('index', {
+        pageTitle, message, latestUpdate, connections,
+      });
     })
     .catch(e => console.log(e));
 });
