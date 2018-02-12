@@ -5,6 +5,7 @@ const axios = require('axios');
 const moment = require('moment');
 const where = require('node-where');
 const geolib = require('geolib');
+const favicon = require('serve-favicon');
 
 const port = process.env.PORT || 3000;
 
@@ -15,6 +16,8 @@ const brusselsNorthCode = '008812005';
 
 const app = express();
 
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+
 app.set('view engine', 'hbs');
 
 // this has to be the FIRST middleware!
@@ -22,12 +25,13 @@ app.set('view engine', 'hbs');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 app.enable('trust proxy');
 
 app.use((req, res, next) => {
   where.is(req.ip, (err, result) => {
     req.geoip = result;
-    console.log(typeof req.ip); // ...
+    // console.log(typeof req.ip); // ...
     next();
   });
 });
