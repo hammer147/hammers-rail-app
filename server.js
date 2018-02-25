@@ -74,8 +74,9 @@ app.get('/', (req, res) => {
         const { platform } = connection.departure;
         const direction = connection.departure.direction.name;
         const durationMin = connection.duration / 60;
+        const canceled = connection.departure.canceled === '0' ? '' : 'canceled';
         return {
-          time, delayMin, realTime, minLeft, platform, direction, durationMin,
+          time, delayMin, realTime, minLeft, platform, direction, durationMin, canceled,
         };
       });
 
